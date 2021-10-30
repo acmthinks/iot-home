@@ -12,10 +12,7 @@ import json
 import RPi.GPIO as GPIO
 
 pin1=17
-#setup the mode in which to refer to the pins
-GPIO.setmode(GPIO.BCM)
-#initialize the pins
-GPIO.setup(pin1, GPIO.OUT)
+
 
 # This sample uses the Message Broker for AWS IoT to send and receive messages
 # through an MQTT connection. On startup, the device connects to the server,
@@ -86,8 +83,14 @@ def on_resubscribe_complete(resubscribe_future):
 # Callback when the subscribed topic receives a message
 def on_message_received(topic, payload, dup, qos, retain, **kwargs):
     print("Received message from topic '{}': {}".format(topic, payload))
+    # setup the mode in which to refer to the pins
+    GPIO.setmode(GPIO.BCM)
+    # initialize the pins
+    GPIO.setup(pin1, GPIO.OUT)
+    # send signal to gate controller
     GPIO.output(pin1, True)
     time.sleep(1)
+    # stop signal to gate controller
     GPIO.output(pin1, False)
     GPIO.cleanup()
     global received_count
