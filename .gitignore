@@ -1,5 +1,4 @@
 # ignore certs and keys
-*.pem
 *.key
 *.crt
 .DS_Store

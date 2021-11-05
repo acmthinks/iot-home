@@ -10,8 +10,13 @@ import time
 from uuid import uuid4
 import json
 import RPi.GPIO as GPIO
+import configparser
 
-pin1=17
+config = configparser.ConfigParser()
+configFilePath = 'receiver.ini'
+config.read(configFilePath)
+
+pin1 = config.get('aws-iot-config', 'GPIOGatePin')
 
 
 # This sample uses the Message Broker for AWS IoT to send and receive messages
