@@ -16,7 +16,16 @@ config = configparser.ConfigParser()
 configFilePath = 'receiver.ini'
 config.read(configFilePath)
 
-pin1 = int(config.get('aws-iot-config', 'GPIOGatePin'))
+pin1 = int(config.get('raspberry-pi', 'GPIOGatePin'))
+clientId = config.get('aws-iot-config', 'clientId')
+endpoint = config.get('aws-iot-config', 'awsEndpoint')
+topic = config.get('aws-iot-config', 'MQTTtopic')
+message = config.get('aws-iot-config', 'message')
+count = int(config.get('aws-iot-config', 'count'))
+key = config.get('aws-iot-config', 'key')
+cert = config.get('aws-iot-config', 'cert')
+rootCA = config.get('aws-iot-config', 'rootCA')
+
 
 
 # This sample uses the Message Broker for AWS IoT to send and receive messages
@@ -26,19 +35,19 @@ pin1 = int(config.get('aws-iot-config', 'GPIOGatePin'))
 # since it is subscribed to that same topic.
 
 parser = argparse.ArgumentParser(description="Send and receive messages through and MQTT connection.")
-parser.add_argument('--endpoint', required=True, help="Your AWS IoT custom endpoint, not including a port. " +
+parser.add_argument('--endpoint', default=endpoint, required=True, help="Your AWS IoT custom endpoint, not including a port. " +
                                                       "Ex: \"abcd123456wxyz-ats.iot.us-east-1.amazonaws.com\"")
 parser.add_argument('--port', type=int, help="Specify port. AWS IoT supports 443 and 8883.")
-parser.add_argument('--cert', help="File path to your client certificate, in PEM format.")
-parser.add_argument('--key', help="File path to your private key, in PEM format.")
-parser.add_argument('--root-ca', help="File path to root certificate authority, in PEM format. " +
+parser.add_argument('--cert', default=cert, help="File path to your client certificate, in PEM format.")
+parser.add_argument('--key', default=key, help="File path to your private key, in PEM format.")
+parser.add_argument('--root-ca', default=rootCA, help="File path to root certificate authority, in PEM format. " +
                                       "Necessary if MQTT server uses a certificate that's not already in " +
                                       "your trust store.")
-parser.add_argument('--client-id', default="test-" + str(uuid4()), help="Client ID for MQTT connection.")
-parser.add_argument('--topic', default="test/topic", help="Topic to subscribe to, and publish messages to.")
-parser.add_argument('--message', default="Hello World!", help="Message to publish. " +
+parser.add_argument('--client-id', default=clientId + str(uuid4()), help="Client ID for MQTT connection.")
+parser.add_argument('--topic', default=topic, help="Topic to subscribe to, and publish messages to.")
+parser.add_argument('--message', default=message, help="Message to publish. " +
                                                               "Specify empty string to publish nothing.")
-parser.add_argument('--count', default=1, type=int, help="Number of messages to publish/receive before exiting. " +
+parser.add_argument('--count', default=count, type=int, help="Number of messages to publish/receive before exiting. " +
                                                           "Specify 0 to run forever.")
 parser.add_argument('--use-websocket', default=False, action='store_true',
     help="To use a websocket instead of raw mqtt. If you " +

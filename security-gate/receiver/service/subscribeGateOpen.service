@@ -8,7 +8,7 @@ Type=simple
 Restart=always
 RestartSec=1
 User=pi
-ExecStart = python /home/pi/dev/iot-home/security-gate/receiver/subscribeGateOpen.py
+ExecStart = python3 /home/pi/dev/iot-home/security-gate/receiver/subscribeGateOpen.py
 
 [Install]
 WantedBy=multi-user.target
