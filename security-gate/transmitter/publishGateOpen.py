@@ -13,18 +13,20 @@ config.read(configFilePath)
 clientId = config.get('aws-iot-config', 'clientId')
 awsEndpoint = config.get('aws-iot-config', 'awsEndpoint')
 topic = config.get('aws-iot-config', 'MQTTtopic')
-buttonPin = config.get('raspberry-pi', 'buttonPin')
-buttonLEDPin = config.get('raspberry-pi', 'buttonLEDPin')
+buttonPin = int("config.get('raspberry-pi', 'buttonPin')")
+buttonLEDPin = int("config.get('raspberry-pi', 'buttonLEDPin')")
 #print ("ClientId: " + clientId)
 #print ("AWSEndPoint: " + awsEndpoint)
 #print ("topic:" + topic)
-print ("buttonPin: " + buttonPin)
-print ("buttonLEDPin: " + buttonLEDPin)
+print ("buttonPin: " + str(buttonPin))
+print ("buttonLEDPin: " + str(buttonLEDPin))
 
 #initialize button
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(buttonPin, GPIO.IN)
-#GPIO.setup(buttonLEDPin, GPIO.OUT)
+GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+#listen for button event
+GPIO.add_event_detect(buttonPin,GPIO.RISING)
 
 #connect to Cloud MQTT service endpoint (with certs)
 myAWSIoTMQTTClient = AWSIoTPyMQTT.AWSIoTMQTTClient(clientId)
@@ -32,26 +34,13 @@ myAWSIoTMQTTClient.configureEndpoint(awsEndpoint, 8883)
 myAWSIoTMQTTClient.configureCredentials("certs/AmazonRootCA1.pem", "certs/private.pem.key", "certs/device.pem.crt")
 
 while True:
-    myAWSIoTMQTTClient.connect()
-
-    # Turn LED off
-    #print ("LED off")
-    #GPIO.output(21, GPIO.LOW)
-
+    
     # waiting for button press
-    while GPIO.input(buttonPin) == 1:
-        time.sleep(0.2)
-        
-    # Open Gate/send signal
-    #print ("LED on")
-    #GPIO.output(21, GPIO.HIGH)
-
-    print ("Publish: OPEN Gate")
-    myAWSIoTMQTTClient.publish(topic,"OPEN", 0)
-    print ("Publish: End")
-
-    # waiting for button release
-    while GPIO.input(buttonPin) == 0:
-        time.sleep(0.2)  
-
-    myAWSIoTMQTTClient.disconnect()
+    if GPIO.event_detected(buttonPin) :
+        #connect to MQTT Gateway
+        myAWSIoTMQTTClient.connect()
+        print ("Publish: OPEN Gate")
+        myAWSIoTMQTTClient.publish(topic,"OPEN", 0)
+        print ("Publish: End")
+        myAWSIoTMQTTClient.disconnect()
+        time.sleep(1)
