@@ -1,0 +1,14 @@
+[Unit]
+Description=Front Gate Controller Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=pi
+ExecStart = python /home/pi/dev/iot-home/security-gate/receiver/subscribeGateOpen.py
+
+[Install]
+WantedBy=multi-user.target

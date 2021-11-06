@@ -1,6 +1,12 @@
+#Security Gate 
 
+##Setup
+AWS IoT Core
 
-Install the Receiver Service
-systemctl start publishGateOpen
+##Install the Gate Control Receiver
+Raspberry Pi (package pre-reqs, HW setup with peripherals)
+Relay, breadboard setup
+Integration to gate control board
 
-systemctl enable publishGateOpen
+##Install the Gate Control Transmitter
+Raspberry Pi (package pre-reqs, HW setup with momentary switch)
