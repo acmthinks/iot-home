@@ -8,6 +8,7 @@ Type=simple
 Restart=always
 RestartSec=1
 User=pi
+SyslogIdentifier = GateController
 ExecStart = python3 /home/pi/dev/iot-home/security-gate/receiver/subscribeGateOpen.py
 
 [Install]

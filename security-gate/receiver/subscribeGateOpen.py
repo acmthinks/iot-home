@@ -13,8 +13,9 @@ import RPi.GPIO as GPIO
 import configparser
 
 config = configparser.ConfigParser()
+localPath = '/home/pi/dev/iot-home/security-gate/receiver/'
 configFilePath = 'receiver.ini'
-config.read(configFilePath)
+config.read(localPath + configFilePath)
 
 pin1 = int(config.get('raspberry-pi', 'GPIOGatePin'))
 clientId = config.get('aws-iot-config', 'clientId')
@@ -22,9 +23,9 @@ endpoint = config.get('aws-iot-config', 'awsEndpoint')
 topic = config.get('aws-iot-config', 'MQTTtopic')
 message = config.get('aws-iot-config', 'message')
 count = int(config.get('aws-iot-config', 'count'))
-key = config.get('aws-iot-config', 'key')
-cert = config.get('aws-iot-config', 'cert')
-rootCA = config.get('aws-iot-config', 'rootCA')
+key = localPath + config.get('aws-iot-config', 'key')
+cert = localPath + config.get('aws-iot-config', 'cert')
+rootCA = localPath + config.get('aws-iot-config', 'rootCA')
 
 
 
