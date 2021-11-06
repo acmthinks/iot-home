@@ -1,12 +1,13 @@
-place this file in /etc/systemd/system/
-##install as a system Service
+# Install as a system Service
+Place 'subscribeGateOpen.service` in /etc/systemd/system/
+Install the service 
 ```
 systemctl enable subscribeGateOpen
 systemctl daemon-reload
 systemctl start subscribeGateOpen
 ```
 
-######Check to validate service is running
+## Check to validate service is running
 ```
 systemctl | grep running
 ```
