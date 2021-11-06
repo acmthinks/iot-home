@@ -16,7 +16,7 @@ config = configparser.ConfigParser()
 configFilePath = 'receiver.ini'
 config.read(configFilePath)
 
-pin1 = config.get('aws-iot-config', 'GPIOGatePin')
+pin1 = int(config.get('aws-iot-config', 'GPIOGatePin'))
 
 
 # This sample uses the Message Broker for AWS IoT to send and receive messages
