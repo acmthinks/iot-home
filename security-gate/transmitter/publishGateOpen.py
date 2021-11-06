@@ -1,7 +1,7 @@
 import configparser
 import json
 import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
-import RPI.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 
 
@@ -9,6 +9,7 @@ import time
 config = configparser.ConfigParser()
 configFilePath = 'transmitter.ini'
 config.read(configFilePath)
+
 # read configuration parms
 clientId = config.get('aws-iot-config', 'clientId')
 awsEndpoint = config.get('aws-iot-config', 'awsEndpoint')
