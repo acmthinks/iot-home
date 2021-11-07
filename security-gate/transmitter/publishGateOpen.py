@@ -5,16 +5,18 @@ import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
 import RPi.GPIO as GPIO
 import time
 
-if __name__ == "__publishGateOpen__" :
-    scriptName = sys.argv[0]
-    print ("Running: " + scriptName)
-    localPath = scriptName.rsplit('/', 1)[0] + "/"
-    print ("localPath: " + scriptName)
+scriptName = sys.argv[0]
+print ("Running: " + scriptName)
+localPath = scriptName.rsplit('/', 1)[0]
+if scriptName == localPath: 
+    localPath = ""
+else:
+    localPath = localPath + "/"
+print ("localPath: " + localPath)
 
 
 # read configuration file
 config = configparser.ConfigParser()
-#localPath = '/home/pi/dev/iot-home/security-gate/transmitter/'
 configFilePath = localPath + 'transmitter.ini'
 config.read(configFilePath)
 
@@ -30,6 +32,9 @@ rootCA = localPath + config.get('aws-iot-config', 'rootCA')
 print ("ClientId: " + clientId)
 print ("AWSEndPoint: " + awsEndpoint)
 print ("topic:" + topic)
+print ("key: " + key)
+print ("cert: " + cert)
+print ("rootCA" + rootCA)
 print ("buttonPin: " + str(buttonPin))
 print ("buttonLEDPin: " + str(buttonLEDPin))
 
@@ -43,7 +48,7 @@ GPIO.add_event_detect(buttonPin,GPIO.RISING)
 #connect to Cloud MQTT service endpoint (with certs)
 myAWSIoTMQTTClient = AWSIoTPyMQTT.AWSIoTMQTTClient(clientId)
 myAWSIoTMQTTClient.configureEndpoint(awsEndpoint, 8883)
-myAWSIoTMQTTClient.configureCredentials("certs/AmazonRootCA1.pem", "certs/private.pem.key", "certs/device.pem.crt")
+myAWSIoTMQTTClient.configureCredentials(rootCA, key, cert)
 
 while True:
     
