@@ -1,0 +1,15 @@
+[Unit]
+Description=Front Gate Controller Trasmitter Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=pi
+SyslogIdentifier = GateControllerTransmitter
+ExecStart = python3 /home/pi/dev/iot-home/security-gate/receiver/publishGateOpen.py
+
+[Install]
+WantedBy=multi-user.target
