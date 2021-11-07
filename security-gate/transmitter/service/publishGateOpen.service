@@ -9,7 +9,7 @@ Restart=always
 RestartSec=1
 User=pi
 SyslogIdentifier = GateControllerTransmitter
-ExecStart = python3 /home/pi/dev/iot-home/security-gate/receiver/publishGateOpen.py
+ExecStart = python /home/pi/dev/iot-home/security-gate/transmitter/publishGateOpen.py
 
 [Install]
 WantedBy=multi-user.target
