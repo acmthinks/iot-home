@@ -12,8 +12,17 @@ import json
 import RPi.GPIO as GPIO
 import configparser
 
+scriptName = sys.argv[0]
+print ("Running: " + scriptName)
+localPath = scriptName.rsplit('/', 1)[0]
+if scriptName == localPath: 
+    localPath = ""
+else:
+    localPath = localPath + "/"
+print ("localPath: " + localPath)
+
 config = configparser.ConfigParser()
-localPath = '/home/pi/dev/iot-home/security-gate/receiver/'
+#localPath = '/home/pi/dev/iot-home/security-gate/receiver/'
 configFilePath = 'receiver.ini'
 config.read(localPath + configFilePath)
 
