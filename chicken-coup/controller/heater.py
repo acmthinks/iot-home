@@ -25,6 +25,7 @@ config.read(configFilePath)
 # read configuration parms
 pin = int(config.get('raspberry-pi', 'GPIOTemperaturePin'))
 temperatureThreshold = int(config.get('raspberry-pi', 'temperatureThreshold'))
+temperaturePollInterval = int(config.get('raspberry-pi', 'temperaturePollInterval'))
 print ("Temperature pin: ", pin)
 
 # initialize GPIO
@@ -50,7 +51,7 @@ try:
         else:
             print("Error: %d" % result.error_code)
 
-        sleep(10)
+        sleep(temperaturePollInterval)
 except KeyboardInterrupt:
     print("Cleanup")
     GPIO.cleanup()
