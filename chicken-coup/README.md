@@ -10,7 +10,12 @@ pip install astral
 sudo pip3 install awsiotsdk
 ```
 
-2. Clone this repo. I prefer to install in my home directory under `dev`.
+2. Install the [DHT11 Python Library](https://pypi.org/project/dht11/)
+```
+pip install dht11
+```
+
+3. Clone this repo. I prefer to install in my home directory under `dev`.
 ```
 mkdir ~/dev
 cd ~/dev
