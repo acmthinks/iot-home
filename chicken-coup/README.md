@@ -1,4 +1,4 @@
-#Chicken Coup Light
+# Chicken Coup Light
 
 0. Install the [Astral](https://pypi.org/project/astral/1.2/)
 ```
