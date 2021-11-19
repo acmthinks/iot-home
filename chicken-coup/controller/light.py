@@ -31,11 +31,11 @@ region = config.get('location-config', 'region')
 timezone = config.get('location-config', 'timezone')
 latitude = config.get('location-config', 'latitude')
 longitude = config.get('location-config', 'longitude')
-pin = config.get('raspberry-pi', 'GPIOLightPin')
+pin = int(config.get('raspberry-pi', 'GPIOLightPin'))
 nightLightDuration = config.get('raspberry-pi', 'nightLightDuration')
 print ("latitude: ", latitude)
 print ("longitude: ", longitude)
-print ("Pin: " + pin)
+print ("Pin: " + str(pin))
 
 #get today's date
 tz = pytz.timezone(timezone)
