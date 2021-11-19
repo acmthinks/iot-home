@@ -1,0 +1,15 @@
+[Unit]
+Description=Chicken Coup Light Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=pi
+SyslogIdentifier = ChickenCoupLight
+ExecStart = python3 /home/pi/dev/iot-home/chicken-coup/controller/light.py
+
+[Install]
+WantedBy=multi-user.target
