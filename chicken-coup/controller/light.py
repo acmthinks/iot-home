@@ -1,7 +1,7 @@
 import sys
 import configparser
 import json
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from time import sleep
 import datetime
 import pytz
@@ -58,17 +58,26 @@ todayDusk = location.dusk(None, True, 0)
 
 print ("Today's Dusk: " + str(todayDusk))
 
+# setup the mode in which to refer to the pins
+GPIO.setmode(GPIO.BCM)
+# initialize the pin light
+GPIO.setup(pin, GPIO.OUT)
 
 while True:
     if now > todayDusk: 
         print ("It's dark!!!")
         #turn the light on
         print ("Light on")
+        GPIO.output(pin, True)
+    
         #leave the light on for 2 hours
         sleep(int(nightLightDuration))
         
         #turn the light off
         print ("Turn the light off")
+        # stop signal to gate controller
+        GPIO.output(pin, False)
+        GPIO.cleanup()
 
         #break out of the loop and quit
         quit()
