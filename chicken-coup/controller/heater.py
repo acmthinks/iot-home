@@ -39,9 +39,10 @@ try:
         result = instance.read()
         if result.is_valid():
             print("Last valid input: " + str(datetime.datetime.now()))
-            print("Temperature: %-3.1f C" % result.temperature)
+            tempF = ((result.temperature * 9/5) + 32)
+            print("Temperature: %-3.1f F" % tempF)
             print("Humidity: %-3.1f %%" % result.humidity)
-            if result.temperature < 50:
+            if tempF < 50:
                 #turn on heater
                 print("Heat ON")
             else:
