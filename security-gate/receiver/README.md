@@ -4,7 +4,7 @@
 
 1. Install the [AWS IoT Python SDK](https://github.com/aws/aws-iot-device-sdk-python-v2)
 ```
-pip3 install AWSIoTPythonSDK
+sudo pip3 install awsiotsdk
 ```
 
 2. Clone this repo. I prefer to install in my home directory under `dev`.
