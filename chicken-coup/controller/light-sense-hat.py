@@ -1,7 +1,6 @@
 import sys
 import configparser
 import json
-import RPi.GPIO as GPIO
 from time import sleep
 import datetime
 import pytz
@@ -32,11 +31,9 @@ region = config.get('location-config', 'region')
 timezone = config.get('location-config', 'timezone')
 latitude = config.get('location-config', 'latitude')
 longitude = config.get('location-config', 'longitude')
-pin = int(config.get('raspberry-pi', 'GPIOLightPin'))
 nightLightDuration = config.get('raspberry-pi', 'nightLightDuration')
 print ("latitude: ", latitude)
 print ("longitude: ", longitude)
-print ("Pin: " + str(pin))
 
 #get today's date
 tz = pytz.timezone(timezone)
@@ -92,6 +89,7 @@ while True:
         print ("It's dark!!!")
         #turn the light on
         print ("Light on")
+        senseHat.low_light = False
         senseHat.set_pixels(allOn)
     
         #leave the light on for 2 hours
@@ -108,8 +106,3 @@ while True:
 
         #break out of the loop and quit
         quit()
-
-  #get today's scheduled Dusk time HH:MM
-  #get the time right now
-  #sleep(1)
-  #if now is after Dusk, turn on the light
