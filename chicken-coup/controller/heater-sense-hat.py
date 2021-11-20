@@ -25,7 +25,6 @@ config.read(configFilePath)
 # read configuration parms
 temperatureThreshold = int(config.get('raspberry-pi', 'temperatureThreshold'))
 temperaturePollInterval = int(config.get('raspberry-pi', 'temperaturePollInterval'))
-print ("Temperature pin: ", pin)
 
 # initialize Sense Hat
 senseHat = SenseHat()
