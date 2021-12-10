@@ -1,4 +1,5 @@
 import sys
+import logging
 import configparser
 import json
 import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
@@ -14,6 +15,16 @@ else:
     localPath = localPath + "/"
 print ("localPath: " + localPath)
 
+FORMAT = '%(asctime)s - %(name)s - %(levelname)s:  %(message)s'
+logger = logging.getLogger('publishGateOpen')
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+ch.setFormatter(FORMAT)
+logger.addHandler(ch)
+
+#logging.basicConfig(format=FORMAT, datefmt='%m/%d/%Y %I:%M:%S %p')
+#logging.basicConfig(filename="publishGateOpen.log", level=logging.INFO)
 
 # read configuration file
 config = configparser.ConfigParser()
@@ -55,9 +66,12 @@ while True:
     # waiting for button press
     if GPIO.event_detected(buttonPin) :
         #connect to MQTT Gateway
+        logging.info("Connect to AWS IoT")
         myAWSIoTMQTTClient.connect()
         print ("Publish: OPEN Gate")
+        logging.info("Gate OPEN")
         myAWSIoTMQTTClient.publish(topic,"OPEN", 0)
         print ("Publish: End")
+        logging.info("Connect to AWS IoT")
         myAWSIoTMQTTClient.disconnect()
         time.sleep(1)
