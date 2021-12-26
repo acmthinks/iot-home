@@ -1,30 +1,21 @@
-import sys
-import configparser
-import json
+"""
+Module to use the Raspberry Pi Sense HAT to sense outside temperature and turn on coup heater
+"""
+
 from time import sleep
 import datetime
 from sense_hat import SenseHat
-
+import defs
 
 #set localPath and accommodate invocation by systemd or by local
-scriptName = sys.argv[0]
-print ("Running: " + scriptName)
-localPath = scriptName.rsplit('/', 1)[0]
-if scriptName == localPath: 
-    localPath = ""
-else:
-    localPath = localPath + "/"
-print ("localPath: " + localPath)
-
+LOCAL_PATH=defs.setLocalPath
 
 # read configuration file
-config = configparser.ConfigParser()
-configFilePath = localPath + 'controller.ini'
-config.read(configFilePath)
+config = defs.getConfig(LOCAL_PATH, 'controller.ini')
 
 # read configuration parms
-temperatureThreshold = int(config.get('raspberry-pi', 'temperatureThreshold'))
-temperaturePollInterval = int(config.get('raspberry-pi', 'temperaturePollInterval'))
+TEMPERATURE_THRESHOLD = int(config.get('raspberry-pi', 'temperatureThreshold'))
+TEMPERATURE_POLL_INTERVAL = int(config.get('raspberry-pi', 'temperaturePollInterval'))
 
 # initialize Sense Hat
 senseHat = SenseHat()
@@ -37,12 +28,10 @@ while True:
     tempF = ((temp * 9/5) + 32)
     print("Temperature: %-3.1f F" % tempF)
     print("Humidity: %-3.1f %%" % humidity)
-    if tempF < 50:
+    if tempF < TEMPERATURE_THRESHOLD:
         #turn on heater
         print("Heat ON")
     else:
         print ("Heat OFF")
-        
-    sleep(temperaturePollInterval)
-
+    sleep(TEMPERATURE_POLL_INTERVAL)
         

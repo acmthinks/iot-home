@@ -1,6 +1,8 @@
+"""
+Module to use the Raspberry Pi Sense HAT to determine dusk to turn on Sense HAT light
+"""
+
 import sys
-import configparser
-import json
 from time import sleep
 import datetime
 import pytz
@@ -8,23 +10,13 @@ from astral import LocationInfo
 from astral.sun import sun
 from astral.location import Location
 from sense_hat import SenseHat
-
+import defs
 
 #set localPath and accommodate invocation by systemd or by local
-scriptName = sys.argv[0]
-print ("Running: " + scriptName)
-localPath = scriptName.rsplit('/', 1)[0]
-if scriptName == localPath: 
-    localPath = ""
-else:
-    localPath = localPath + "/"
-print ("localPath: " + localPath)
-
+LOCAL_PATH=defs.setLocalPath
 
 # read configuration file
-config = configparser.ConfigParser()
-configFilePath = localPath + 'controller.ini'
-config.read(configFilePath)
+config = defs.getConfig(LOCAL_PATH, 'controller.ini')
 
 # read configuration parms
 region = config.get('location-config', 'region')
@@ -85,16 +77,16 @@ X, X, X, X, X, X, X, X,
 ]
 
 while True:
-    if now > todayDusk: 
+    if now > todayDusk:
         print ("It's dark!!!")
         #turn the light on
         print ("Light on")
         senseHat.low_light = False
         senseHat.set_pixels(allOn)
-    
+
         #leave the light on for 2 hours
         sleep(int(nightLightDuration))
-        
+
         senseHat.low_light = True
 
         sleep(10)
@@ -105,4 +97,4 @@ while True:
         senseHat.clear()
 
         #break out of the loop and quit
-        quit()
+        sys.exit()

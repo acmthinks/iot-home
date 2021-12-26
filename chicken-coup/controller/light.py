@@ -1,41 +1,35 @@
+"""
+Module to use the Raspberry Pi to determine dusk and turn on light
+"""
+
 import sys
-import configparser
-import json
-import RPi.GPIO as GPIO
 from time import sleep
 import datetime
 import pytz
 from astral import LocationInfo
 from astral.sun import sun
 from astral.location import Location
+from RPi import GPIO
+import defs
 
 
 #set localPath and accommodate invocation by systemd or by local
-scriptName = sys.argv[0]
-print ("Running: " + scriptName)
-localPath = scriptName.rsplit('/', 1)[0]
-if scriptName == localPath: 
-    localPath = ""
-else:
-    localPath = localPath + "/"
-print ("localPath: " + localPath)
-
+LOCAL_PATH=defs.setLocalPath
 
 # read configuration file
-config = configparser.ConfigParser()
-configFilePath = localPath + 'controller.ini'
-config.read(configFilePath)
+config = defs.getConfig(LOCAL_PATH, 'controller.ini')
+
 
 # read configuration parms
 region = config.get('location-config', 'region')
 timezone = config.get('location-config', 'timezone')
 latitude = config.get('location-config', 'latitude')
 longitude = config.get('location-config', 'longitude')
-pin = int(config.get('raspberry-pi', 'GPIOLightPin'))
+PIN = int(config.get('raspberry-pi', 'GPIOLightPin'))
 nightLightDuration = config.get('raspberry-pi', 'nightLightDuration')
 print ("latitude: ", latitude)
 print ("longitude: ", longitude)
-print ("Pin: " + str(pin))
+print ("Pin: " + str(PIN))
 
 #get today's date
 tz = pytz.timezone(timezone)
@@ -61,28 +55,23 @@ print ("Today's Dusk: " + str(todayDusk))
 # setup the mode in which to refer to the pins
 GPIO.setmode(GPIO.BCM)
 # initialize the pin light
-GPIO.setup(pin, GPIO.OUT)
+GPIO.setup(PIN, GPIO.OUT)
 
 while True:
-    if now > todayDusk: 
+    if now > todayDusk:
         print ("It's dark!!!")
         #turn the light on
         print ("Light on")
-        GPIO.output(pin, True)
-    
+        GPIO.output(PIN, True)
+
         #leave the light on for 2 hours
         sleep(int(nightLightDuration))
-        
+
         #turn the light off
         print ("Turn the light off")
         # stop signal to gate controller
-        GPIO.output(pin, False)
+        GPIO.output(PIN, False)
         GPIO.cleanup()
 
         #break out of the loop and quit
-        quit()
-
-  #get today's scheduled Dusk time HH:MM
-  #get the time right now
-  #sleep(1)
-  #if now is after Dusk, turn on the light
+        sys.exit()

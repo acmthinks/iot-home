@@ -1,39 +1,31 @@
-import sys
-import configparser
-import json
-import RPi.GPIO as GPIO
-import dht11
+"""
+Module to use the Raspberry Pi Sense HAT to sense outside temperature and turn on coup heater
+"""
+
 from time import sleep
 import datetime
+from RPi import GPIO
+import dht11
+import defs
 
 #set localPath and accommodate invocation by systemd or by local
-scriptName = sys.argv[0]
-print ("Running: " + scriptName)
-localPath = scriptName.rsplit('/', 1)[0]
-if scriptName == localPath: 
-    localPath = ""
-else:
-    localPath = localPath + "/"
-print ("localPath: " + localPath)
-
+LOCAL_PATH=defs.setLocalPath
 
 # read configuration file
-config = configparser.ConfigParser()
-configFilePath = localPath + 'controller.ini'
-config.read(configFilePath)
+config = defs.getConfig(LOCAL_PATH, 'controller.ini')
 
 # read configuration parms
-pin = int(config.get('raspberry-pi', 'GPIOTemperaturePin'))
-temperatureThreshold = int(config.get('raspberry-pi', 'temperatureThreshold'))
-temperaturePollInterval = int(config.get('raspberry-pi', 'temperaturePollInterval'))
-print ("Temperature pin: ", pin)
+PIN = int(config.get('raspberry-pi', 'GPIOTemperaturePin'))
+TEMPERATURE_THRESHOLD = int(config.get('raspberry-pi', 'temperatureThreshold'))
+TEMPERATURE_POLL_INTERVAL = int(config.get('raspberry-pi', 'temperaturePollInterval'))
+print ("Temperature pin: ", PIN)
 
 # initialize GPIO
 GPIO.setwarnings(True)
 GPIO.setmode(GPIO.BCM)
 
 # read data using pin 14
-instance = dht11.DHT11(pin = pin)
+instance = dht11.DHT11(pin = PIN)
 
 try:
     while True:
@@ -41,17 +33,17 @@ try:
         if result.is_valid():
             print("Last valid input: " + str(datetime.datetime.now()))
             tempF = ((result.temperature * 9/5) + 32)
-            print("Temperature: %-3.1f F" % tempF)
-            print("Humidity: %-3.1f %%" % result.humidity)
-            if tempF < 50:
+            "Temperature: {} F ".format(tempF)
+            "Humidity: {}%".format(result.humidity)
+            if tempF < TEMPERATURE_THRESHOLD:
                 #turn on heater
                 print("Heat ON")
             else:
-                print ("Heat OFF")
+                print("Heat OFF")
         else:
-            print("Error: %d" % result.error_code)
+            "Error: {}".format(result.error_code)
 
-        sleep(temperaturePollInterval)
+        sleep(TEMPERATURE_POLL_INTERVAL)
 except KeyboardInterrupt:
     print("Cleanup")
     GPIO.cleanup()
