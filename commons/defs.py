@@ -1,9 +1,8 @@
 #common functions
 import configparser
 
-def setLocalPath():
+def setLocalPath(scriptName):
     #set localPath and accommodate invocation by systemd or by local
-    scriptName = sys.argv[0]
     print ("Running: " + scriptName)
     localPath = scriptName.rsplit('/', 1)[0]
     if scriptName == localPath: 
@@ -13,8 +12,11 @@ def setLocalPath():
     print ("localPath: " + localPath)
     return localPath
 
-def getConfig(path, config):
+def getConfig(pathName, configName):
     # read configuration file
     config = configparser.ConfigParser()
-    config.read(path + config)
+    if not pathName:
+        config.read(configName)
+    else:
+        config.read(pathName + configName)
     return config

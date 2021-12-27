@@ -10,9 +10,9 @@ pip install astral
 sudo pip3 install awsiotsdk
 ```
 
-2. Install the [DHT11 Python Library](https://pypi.org/project/dht11/)
+2. Install [Sense HAT](https://www.raspberrypi.com/documentation/accessories/sense-hat.html)
 ```
-pip install dht11
+sudo apt-get install sense-hat
 ```
 
 3. Clone this repo. I prefer to install in my home directory under `dev`.

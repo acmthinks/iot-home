@@ -10,10 +10,13 @@ from astral import LocationInfo
 from astral.sun import sun
 from astral.location import Location
 from sense_hat import SenseHat
+
+sys.path.append('../../commons')
+
 import defs
 
 #set localPath and accommodate invocation by systemd or by local
-LOCAL_PATH=defs.setLocalPath
+LOCAL_PATH=defs.setLocalPath(sys.argv[0])
 
 # read configuration file
 config = defs.getConfig(LOCAL_PATH, 'controller.ini')
