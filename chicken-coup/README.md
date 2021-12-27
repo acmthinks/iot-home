@@ -24,4 +24,19 @@ git clone https://github.com/acmthinks/iot-home.git
 4. Optional. Install the ["Chicken Coup Light Service"](service/README.md) 
 
 
-3. Optional. If you want to have remote ssh access to your transmitter, remember to `sudo raspi-config` and enable SSH.
+5. Optional. If you want to have remote ssh access to your transmitter, remember to `sudo raspi-config` and enable SSH.
+
+
+6. Optional. Enable PiCamera to stream video feeds.
+```
+sudo raspi-config
+```
+Select Interfaces, Enable Camera. Finish. In a Terminal window (on your Pi), launch the video camera stream
+```
+libcamera-vid -t 0 --inline --listen tcp://0.0.0.0.:8888
+```
+
+On a seperate computer, install [VLC](https://www.videolan.org). Open Network and enter in the following URL
+```
+```
+Here is a great tutorial on [How To Use Raspberry Pi Cameras with Bullseye](https://www.tomshardware.com/how-to/use-raspberry-pi-camera-with-bullseye)
