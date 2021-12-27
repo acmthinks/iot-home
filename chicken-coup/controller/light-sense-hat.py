@@ -29,7 +29,7 @@ timezone = config.get('location-config', 'timezone')
 latitude = config.get('location-config', 'latitude')
 longitude = config.get('location-config', 'longitude')
 nightLightDuration = config.get('raspberry-pi', 'nightLightDuration')
-senseHatLED = config.get('rasperry-Pi', 'senseHatLED')
+senseHatLED = bool(config.get('raspberry-pi', 'senseHatLED'))
 PIN = int(config.get('raspberry-pi', 'GPIOLightPin'))
 print ("latitude: ", latitude)
 print ("longitude: ", longitude)
@@ -57,6 +57,7 @@ print ("Today's Dusk: " + str(todayDusk))
 
 # initialize Sense Hat
 if (senseHatLED):
+    print ("Sense Hat is the light source")
     senseHat = SenseHat()
 
     O = [255, 255, 255] # white, on
@@ -83,11 +84,21 @@ if (senseHatLED):
     X, X, X, X, X, X, X, X,
     X, X, X, X, X, X, X, X,
     ]
+    senseHat.clear()
+    senseHat.low_light = False
+    senseHat.set_pixels(allOn)
+    sleep(10)
+    senseHat.clear()
 else:
+    print ("GPIO is the light source")
     # setup the mode in which to refer to the pins
     GPIO.setmode(GPIO.BCM)
     # initialize the pin light
     GPIO.setup(PIN, GPIO.OUT)
+    GPIO.output(PIN, False)
+    GPIO.output(PIN, True)
+    sleep(10)
+    GPIO.output(PIN, False)
 
 while True:
     if now > todayDusk:
