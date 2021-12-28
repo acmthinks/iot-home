@@ -100,6 +100,7 @@ else:
     sleep(10)
     GPIO.output(PIN, False)
     GPIO.cleanup()
+    GPIO.setmode(GPIO.BCM)
     GPIO.setup(PIN, GPIO.OUT)
 
 while True:
@@ -107,7 +108,7 @@ while True:
         print ("It's dark!!!")
         #turn the light on
         print ("Light on")
-        if (senseHatLED): 
+        if (senseHatLED == True): 
             senseHat.low_light = False
             senseHat.set_pixels(allOn)
         else:
@@ -116,14 +117,12 @@ while True:
         #leave the light on for 2 hours
         sleep(int(nightLightDuration))
 
-        senseHat.low_light = True
-
-        sleep(10)
-
         #turn the light off
         print ("Turn the light off")
         # stop signal to light
-        if (senseHatLED):
+        if (senseHatLED == True):
+            senseHat.low_light = True
+            sleep(10)
             senseHat.clear()
         else: 
             GPIO.output(PIN, False)
