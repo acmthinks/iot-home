@@ -1,5 +1,5 @@
 """
-Module to use the Raspberry Pi to determine dusk and turn on light
+Module to use the Raspberry Pi Sense HAT to determine dusk to turn on Sense HAT light
 """
 
 import sys
@@ -9,27 +9,30 @@ import pytz
 from astral import LocationInfo
 from astral.sun import sun
 from astral.location import Location
+from sense_hat import SenseHat
 from RPi import GPIO
+
+
+sys.path.append('../../commons')
+
 import defs
 
-
 #set localPath and accommodate invocation by systemd or by local
-LOCAL_PATH=defs.setLocalPath
+LOCAL_PATH=defs.setLocalPath(sys.argv[0])
 
 # read configuration file
 config = defs.getConfig(LOCAL_PATH, 'controller.ini')
-
 
 # read configuration parms
 region = config.get('location-config', 'region')
 timezone = config.get('location-config', 'timezone')
 latitude = config.get('location-config', 'latitude')
 longitude = config.get('location-config', 'longitude')
-PIN = int(config.get('raspberry-pi', 'GPIOLightPin'))
 nightLightDuration = config.get('raspberry-pi', 'nightLightDuration')
+senseHatLED = bool(config.get('raspberry-pi', 'senseHatLED'))
+PIN = int(config.get('raspberry-pi', 'GPIOLightPin'))
 print ("latitude: ", latitude)
 print ("longitude: ", longitude)
-print ("Pin: " + str(PIN))
 
 #get today's date
 tz = pytz.timezone(timezone)
@@ -52,26 +55,79 @@ todayDusk = location.dusk(None, True, 0)
 
 print ("Today's Dusk: " + str(todayDusk))
 
-# setup the mode in which to refer to the pins
-GPIO.setmode(GPIO.BCM)
-# initialize the pin light
-GPIO.setup(PIN, GPIO.OUT)
+# initialize Sense Hat
+if (senseHatLED == True):
+    print ("Sense Hat is the light source")
+    senseHat = SenseHat()
+
+    O = [255, 255, 255] # white, on
+    X = [0, 0, 0] # off
+    
+    allOn = [
+    O, O, O, O, O, O, O, O,
+    O, O, O, O, O, O, O, O,
+    O, O, O, O, O, O, O, O,
+    O, O, O, O, O, O, O, O,
+    O, O, O, O, O, O, O, O,
+    O, O, O, O, O, O, O, O,
+    O, O, O, O, O, O, O, O,
+    O, O, O, O, O, O, O, O,
+    ]
+
+    allOff = [
+    X, X, X, X, X, X, X, X,
+    X, X, X, X, X, X, X, X,
+    X, X, X, X, X, X, X, X,
+    X, X, X, X, X, X, X, X,
+    X, X, X, X, X, X, X, X,
+    X, X, X, X, X, X, X, X,
+    X, X, X, X, X, X, X, X,
+    X, X, X, X, X, X, X, X,
+    ]
+    senseHat.clear()
+    senseHat.low_light = False
+    senseHat.set_pixels(allOn)
+    sleep(10)
+    senseHat.clear()
+else:
+    print ("GPIO is the light source")
+    # setup the mode in which to refer to the pins
+    GPIO.setmode(GPIO.BCM)
+    # initialize the pin light
+    GPIO.setup(PIN, GPIO.OUT)
+    GPIO.output(PIN, False)
+    GPIO.output(PIN, True)
+    sleep(10)
+    GPIO.output(PIN, False)
+    GPIO.cleanup()
+    GPIO.setup(PIN, GPIO.OUT)
 
 while True:
     if now > todayDusk:
         print ("It's dark!!!")
         #turn the light on
         print ("Light on")
-        GPIO.output(PIN, True)
+        if (senseHatLED): 
+            senseHat.low_light = False
+            senseHat.set_pixels(allOn)
+        else:
+            GPIO.output(PIN, True)
 
         #leave the light on for 2 hours
         sleep(int(nightLightDuration))
 
+        senseHat.low_light = True
+
+        sleep(10)
+
         #turn the light off
         print ("Turn the light off")
-        # stop signal to gate controller
-        GPIO.output(PIN, False)
-        GPIO.cleanup()
+        # stop signal to light
+        if (senseHatLED):
+            senseHat.clear()
+        else: 
+            GPIO.output(PIN, False)
+            GPIO.cleanup()
 
         #break out of the loop and quit
         sys.exit()
