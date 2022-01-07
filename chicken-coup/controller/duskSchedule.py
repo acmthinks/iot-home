@@ -1,11 +1,9 @@
 """
 Module to determine dusk for the current day, at the chicken coup
 """
-# (crontab -u pi -l ; echo "0 7 * * * python3 ~/dev/iot-home/chicken-coup/controller/dusk.py") | crontab -u pi -
 
 import sys
 import subprocess
-from time import sleep
 import datetime
 import pytz
 from astral import LocationInfo
@@ -27,13 +25,10 @@ region = config.get('location-config', 'region')
 timezone = config.get('location-config', 'timezone')
 latitude = config.get('location-config', 'latitude')
 longitude = config.get('location-config', 'longitude')
-nightLightDuration = config.get('raspberry-pi', 'nightLightDuration')
-absolutePath = config.get('raspberry-pi', 'absolutePath')
-lightScript = absolutePath + config.get('raspberry-pi', 'lightScript')
-duskScript = absolutePath + config.get('raspberry-pi', 'duskScript')
-cronScript = absolutePath + config.get('raspberry-pi', 'cronScript')
-print ("latitude: ", latitude)
-print ("longitude: ", longitude)
+absolute_path = config.get('raspberry-pi', 'absolute_path')
+light_script = absolute_path + config.get('raspberry-pi', 'light_script')
+dusk_script = absolute_path + config.get('raspberry-pi', 'dusk_script')
+cron_script = absolute_path + config.get('raspberry-pi', 'cron_script')
 
 #get today's date
 tz = pytz.timezone(timezone)
@@ -52,35 +47,31 @@ s = sun(locationInfo.observer, date=datetime.date(y,m,d), tzinfo=locationInfo.ti
 for key in ['dawn', 'dusk', 'noon', 'sunrise', 'sunset']:
     print (f'{key:10s}: ', s[key])
 
-todayDusk = location.dusk(None, True, 0)
+today_dusk = location.dusk(None, True, 0)
 
 #let's turn the light on a lil' earlier than official dusk, about 30 minutes earlier
 early = datetime.timedelta(minutes=30)
-beforeDusk = todayDusk - early
+beforeDusk = today_dusk - early
 
-print ("\n\nToday's Dusk: " + str(todayDusk))
+print ("\n\nToday's Dusk: " + str(today_dusk))
 #Today's Dusk: 2022-01-06 18:14:38.298481-05:00
-min=str(todayDusk.minute)
-hour=str(todayDusk.hour)
-day_of_month="*"
-month="*"
-day_of_week="*"
+DUSK_MINUTE=str(today_dusk.minute)
+DUSK_HOUR=str(today_dusk.hour)
 
-light_sched = min + " " + hour + " * * * python3 " + lightScript
-dusk_sched = "0 7 * * * python3 " + duskScript
+light_sched = DUSK_MINUTE + " " + DUSK_HOUR + " * * * python3 " + light_script
+dusk_sched = "0 7 * * * python3 " + dusk_script
 
-cron = open(cronScript, "w")
-cron.write(light_sched)
-cron.write("\n")
-cron.write(dusk_sched)
-cron.write("\n")
-cron.close()
+with open(cron_script, "w", encoding="utf8") as cron:
+    cron.write(light_sched)
+    cron.write("\n")
+    cron.write(dusk_sched)
+    cron.write("\n")
 
 # set crontab entry
-cmd='crontab'
+CMD='crontab'
 
 #remove all entries from the crontab for pi
-subprocess.run([cmd,"-u", "pi", "-r"])
+subprocess.run([CMD,"-u", "pi", "-r"], check=True)
 
 #set new crontab entries
-subprocess.run([cmd, '-u', 'pi', cronScript])
+subprocess.run([CMD, '-u', 'pi', cron_script], check=True)
