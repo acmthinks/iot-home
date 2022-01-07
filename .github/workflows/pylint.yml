@@ -21,7 +21,6 @@ jobs:
         pip3 install awsiotsdk
         pip3 install astral
         pip3 install pytz
-        pip install RPi
     - name: Analysing the code with pylint
       run: |
         pylint $(find . -name "*.py" | xargs)
