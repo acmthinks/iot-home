@@ -15,10 +15,10 @@ sys.path.append('/home/pi/dev/iot-home/commons')
 import defs
 
 #set localPath and accommodate invocation by systemd or by local
-LOCAL_PATH=defs.setLocalPath(sys.argv[0])
+LOCAL_PATH=defs.set_local_path(sys.argv[0])
 
 # read configuration file
-config = defs.getConfig(LOCAL_PATH, 'controller.ini')
+config = defs.get_config(LOCAL_PATH, 'controller.ini')
 
 # read configuration parms
 region = config.get('location-config', 'region')

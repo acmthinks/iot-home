@@ -18,10 +18,10 @@ sys.path.append('/home/pi/dev/iot-home/')
 import defs
 
 #set localPath and accommodate invocation by systemd or by local
-LOCAL_PATH=defs.setLocalPath(sys.argv[0])
+LOCAL_PATH=defs.set_local_path(sys.argv[0])
 
 # read configuration file
-config = defs.getConfig(LOCAL_PATH, 'controller.ini')
+config = defs.get_config(LOCAL_PATH, 'controller.ini')
 
 # read configuration parms
 region = config.get('location-config', 'region')
@@ -54,13 +54,13 @@ today_dusk = location.dusk(None, True, 0)
 print ("Today's Dusk: " + str(today_dusk))
 
 # initialize Sense Hat
-if (sense_hat_led is True):
+if sense_hat_led is True:
     print ("Sense Hat is the light source")
     sense_hat = SenseHat()
 
     O = [255, 255, 255] # white, on
     X = [0, 0, 0] # off
-    
+
     all_on = [
     O, O, O, O, O, O, O, O,
     O, O, O, O, O, O, O, O,
@@ -106,7 +106,7 @@ while True:
         print ("It's dark!!!")
         #turn the light on
         print ("Light on")
-        if (sense_hat_led is True): 
+        if sense_hat_led is True:
             sense_hat.low_light = False
             sense_hat.set_pixels(all_on)
         else:
@@ -118,11 +118,11 @@ while True:
         #turn the light off
         print ("Turn the light off")
         # stop signal to light
-        if (sense_hat_led is True):
+        if sense_hat_led is True:
             sense_hat.low_light = True
             sleep(10)
             sense_hat.clear()
-        else: 
+        else:
             GPIO.output(PIN, False)
             GPIO.cleanup()
 

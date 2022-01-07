@@ -23,13 +23,13 @@ sense_hat_led = config.get('raspberry-pi', 'sense_hat_led')
 PIN = int(config.get('raspberry-pi', 'gpio_light_pin'))
 
 # initialize Sense Hat
-if (sense_hat_led is True):
+if sense_hat_led is True:
     print ("Sense Hat is the light source")
     sense_hat = SenseHat()
 
     O = [255, 255, 255] # white, on
     X = [0, 0, 0] # off
-    
+
     all_on = [
     O, O, O, O, O, O, O, O,
     O, O, O, O, O, O, O, O,
@@ -72,7 +72,7 @@ else:
 
 #turn the light on
 print ("Light on")
-if (sense_hat_led is True): 
+if sense_hat_led is True:
     sense_hat.low_light = False
     sense_hat.set_pixels(all_on)
 else:
@@ -84,10 +84,10 @@ sleep(int(night_light_duration))
 #turn the light off
 print ("Turn the light off")
 # stop signal to light
-if (sense_hat_led is True):
+if sense_hat_led is True:
     sense_hat.low_light = True
     sleep(10)
     sense_hat.clear()
-else: 
+else:
     GPIO.output(PIN, False)
     GPIO.cleanup()
