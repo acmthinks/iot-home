@@ -8,22 +8,22 @@ from sense_hat import SenseHat
 import defs
 
 #set localPath and accommodate invocation by systemd or by local
-LOCAL_PATH=defs.setLocalPath
+LOCAL_PATH=defs.set_local_path
 
 # read configuration file
-config = defs.getConfig(LOCAL_PATH, 'controller.ini')
+config = defs.get_config(LOCAL_PATH, 'controller.ini')
 
 # read configuration parms
-TEMPERATURE_THRESHOLD = int(config.get('raspberry-pi', 'temperatureThreshold'))
-TEMPERATURE_POLL_INTERVAL = int(config.get('raspberry-pi', 'temperaturePollInterval'))
+TEMPERATURE_THRESHOLD = int(config.get('raspberry-pi', 'temperature_threshold'))
+TEMPERATURE_POLL_INTERVAL = int(config.get('raspberry-pi', 'temperature_poll_interval'))
 
 # initialize Sense Hat
-senseHat = SenseHat()
+sense_hat = SenseHat()
 
 while True:
     # read temp
-    temp = senseHat.get_temperature()
-    humidity = senseHat.get_humidity()
+    temp = sense_hat.get_temperature()
+    humidity = sense_hat.get_humidity()
     print("Last valid input: " + str(datetime.datetime.now()))
     tempF = ((temp * 9/5) + 32)
     print("Temperature: %-3.1f F" % tempF)
