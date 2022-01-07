@@ -85,9 +85,10 @@ disable=raw-checker-failed,
         suppressed-message,
         useless-suppression,
         deprecated-pragma,
-        use-symbolic-message-instead
+        use-symbolic-message-instead,
+        wrong-import-position
 
-# Enable the message, report, category or checker with the given id(s). You can
+# Enable the message, report, category or checker with the given id(sa). You can
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once). See also the "--disable" option for examples.
