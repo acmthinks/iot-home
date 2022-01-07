@@ -33,8 +33,10 @@ try:
         if result.is_valid():
             print("Last valid input: " + str(datetime.datetime.now()))
             tempF = ((result.temperature * 9/5) + 32)
-            print(f"Temperature: {} F ".format(tempF))
-            print(f"Humidity: {}%".format(result.humidity))
+            f"Temperature: {tempF} F "
+            #"Temperature: {} F ".format(tempF)
+            f"Humidity: {result.humidity}%"
+            #"Humidity: {}%".format(result.humidity)
             if tempF < TEMPERATURE_THRESHOLD:
                 #turn on heater
                 print("Heat ON")
