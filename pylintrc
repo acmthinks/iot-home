@@ -87,6 +87,7 @@ disable=raw-checker-failed,
         deprecated-pragma,
         use-symbolic-message-instead,
         wrong-import-position,
+        pointless-statement,
         import-error
 
 # Enable the message, report, category or checker with the given id(sa). You can

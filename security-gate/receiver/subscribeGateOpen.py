@@ -1,5 +1,7 @@
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0.
+'''
+ #Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ #SPDX-License-Identifier: Apache-2.0.
+'''
 
 import sys
 import argparse
@@ -12,20 +14,20 @@ from RPi import GPIO
 import defs
 
 #set localPath and accommodate invocation by systemd or by local
-LOCAL_PATH=defs.setLocalPath(sys.argv[0])
+LOCAL_PATH=defs.set_local_path(sys.argv[0])
 
 # read configuration file
-config = defs.getConfig(LOCAL_PATH, 'receiver.ini')
+config = defs.get_config(LOCAL_PATH, 'receiver.ini')
 
-PIN1 = int(config.get('raspberry-pi', 'GPIOGatePin'))
-clientId = config.get('aws-iot-config', 'clientId')
+PIN1 = int(config.get('raspberry-pi', 'gpio_gate_pin'))
+client_id = config.get('aws-iot-config', 'clientId')
 endpoint = config.get('aws-iot-config', 'awsEndpoint')
 topic = config.get('aws-iot-config', 'MQTTtopic')
 message = config.get('aws-iot-config', 'message')
 count = int(config.get('aws-iot-config', 'count'))
 key = LOCAL_PATH + config.get('aws-iot-config', 'key')
 cert = LOCAL_PATH + config.get('aws-iot-config', 'cert')
-rootCA = LOCAL_PATH + config.get('aws-iot-config', 'rootCA')
+root_ca = LOCAL_PATH + config.get('aws-iot-config', 'rootCA')
 
 
 
@@ -44,10 +46,10 @@ parser.add_argument('--port', type=int, help="Specify port. AWS IoT supports 443
 parser.add_argument('--cert', default=cert, help="File path to your client certificate, " +
                                 "in PEM format.")
 parser.add_argument('--key', default=key, help="File path to your private key, in PEM format.")
-parser.add_argument('--root-ca', default=rootCA, help="File path to root certificate authority, " +
+parser.add_argument('--root-ca', default=root_ca, help="File path to root certificate authority, " +
                                 "in PEM format. Necessary if MQTT server uses a certificate " +
                                 "that's not already in your trust store.")
-parser.add_argument('--client-id', default=clientId + str(uuid4()),
+parser.add_argument('--client-id', default=client_id + str(uuid4()),
                                 help="Client ID for MQTT connection.")
 parser.add_argument('--topic', default=topic, help="Topic to subscribe to, and publish messages to.")
 parser.add_argument('--message', default=message, help="Message to publish. " +
@@ -76,11 +78,13 @@ received_all_event = threading.Event()
 
 # Callback when connection is accidentally lost.
 def on_connection_interrupted(connection, error, **kwargs):
+    '''printing a connection interrupt'''
     print("Connection interrupted. error: {}".format(error))
 
 
 # Callback when an interrupted connection is re-established.
 def on_connection_resumed(connection, return_code, session_present, **kwargs):
+    '''connection resumed procedure'''
     print("Connection resumed. return_code: {} session_present: {}".format(return_code, session_present))
 
     if return_code == mqtt.ConnectReturnCode.ACCEPTED and not session_present:
@@ -93,6 +97,7 @@ def on_connection_resumed(connection, return_code, session_present, **kwargs):
 
 
 def on_resubscribe_complete(resubscribe_future):
+    '''processing results for resubscribing to topic'''
     resubscribe_results = resubscribe_future.result()
     print("Resubscribe results: {}".format(resubscribe_results))
 
@@ -103,6 +108,7 @@ def on_resubscribe_complete(resubscribe_future):
 
 # Callback when the subscribed topic receives a message
 def on_message_received(topic, payload, dup, qos, retain, **kwargs):
+    '''Callback when the subscribed topic receives a message'''
     print("Received message from topic '{}': {}".format(topic, payload))
     # setup the mode in which to refer to the pins
     GPIO.setmode(GPIO.BCM)
@@ -126,7 +132,7 @@ if __name__ == '__main__':
     client_bootstrap = io.ClientBootstrap(event_loop_group, host_resolver)
 
     PROXY_OPTIONS = None
-    if (args.proxy_host):
+    if args.proxy_host:
         PROXY_OPTIONS = http.HttpProxyOptions(host_name=args.proxy_host, port=args.proxy_port)
 
     if args.use_websocket == True:

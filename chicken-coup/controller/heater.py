@@ -43,7 +43,7 @@ try:
             else:
                 print("Heat OFF")
         else:
-            "Error: {}".format(result.error_code)
+            f"Error: {result.error_code}"
 
         sleep(TEMPERATURE_POLL_INTERVAL)
 except KeyboardInterrupt:
