@@ -51,12 +51,14 @@ today_dusk = location.dusk(None, True, 0)
 
 #let's turn the light on a lil' earlier than official dusk, about 30 minutes earlier
 early = datetime.timedelta(minutes=30)
-beforeDusk = today_dusk - early
+before_dusk = today_dusk - early
 
 print ("\n\nToday's Dusk: " + str(today_dusk))
 #Today's Dusk: 2022-01-06 18:14:38.298481-05:00
-DUSK_MINUTE=str(today_dusk.minute)
-DUSK_HOUR=str(today_dusk.hour)
+print ("\n\nToday's Dusk (-30 minutes): " + str(before_dusk))
+
+DUSK_MINUTE=str(before_dusk.minute)
+DUSK_HOUR=str(before_dusk.hour)
 
 light_sched = DUSK_MINUTE + " " + DUSK_HOUR + " * * * python3 " + light_script
 dusk_sched = "0 7 * * * python3 " + dusk_script
