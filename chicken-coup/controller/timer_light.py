@@ -52,10 +52,6 @@ if sense_hat_led is True:
     X, X, X, X, X, X, X, X,
     ]
     sense_hat.clear()
-    sense_hat.low_light = False
-    sense_hat.set_pixels(all_on)
-    sleep(10)
-    sense_hat.clear()
 else:
     print ("GPIO is the light source")
     # setup the mode in which to refer to the pins
@@ -63,12 +59,6 @@ else:
     # initialize the pin light
     GPIO.setup(PIN, GPIO.OUT)
     GPIO.output(PIN, False)
-    GPIO.output(PIN, True)
-    sleep(10)
-    GPIO.output(PIN, False)
-    GPIO.cleanup()
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(PIN, GPIO.OUT)
 
 #turn the light on
 print ("Light on")
