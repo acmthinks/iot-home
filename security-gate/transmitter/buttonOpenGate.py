@@ -7,10 +7,10 @@ from gpiozero import Button
 from signal import pause
 
 #set localPath and accommodate invocation by systemd or by local
-LOCAL_PATH=defs.setLocalPath(sys.argv[0])
+LOCAL_PATH=defs.set_local_path(sys.argv[0])
 
 # read configuration file
-config = defs.getConfig(LOCAL_PATH, 'transmitter.ini')
+config = defs.get_config(LOCAL_PATH, 'transmitter.ini')
 
 #setup logging
 FORMAT = '%(asctime)s - %(name)s - %(levelname)s:  %(message)s'
